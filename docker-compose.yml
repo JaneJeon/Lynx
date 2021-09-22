@@ -5,6 +5,7 @@ services:
     build:
       context: .
       target: deps
+    container_name: app-container
     environment:
       - NODE_ENV # pass NODE_ENV environment variable straight to Docker
     depends_on:
@@ -54,3 +55,5 @@ networks:
   public:
     external: true
   internal: {}
+
+  # TODO: share the volumes w/ docker exec

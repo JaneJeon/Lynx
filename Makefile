@@ -6,12 +6,21 @@ DC=$(D) compose
 DC_SVCS=-f docker-compose.dev.yml
 DC_APP=-f docker-compose.yml
 DC_ALL=$(DC_SVCS) $(DC_APP)
+CONTAINER_NAME=app-container
 
 network-up:
-	@$(D) network create public || true
+	$(D) network create public || true
 
 network-down:
-	@$(D) network rm public || true
+	$(D) network rm public || true
+
+# TODO:
+volume-up:
+	$(D) volume create
+
+# TODO:
+volume-down:
+	$(D) volume rm
 
 build:
 	$(DC) $(DC_APP) build
@@ -19,23 +28,29 @@ build:
 rebuild:
 	$(DC) $(DC_APP) build --no-cache
 
-up: network-up
+up: network-up volume-up
 	$(DC) $(DC_ALL) up --renew-anon-volumes --build -d
 
 down:
 	$(DC) $(DC_ALL) down --remove-orphans -v
-	$(MAKE) network-down
+	$(MAKE) network-down volume-down
 
 # e.g. make logs SERVICE=app
 logs:
 	$(DC) $(DC_ALL) logs -f $(SERVICE)
 
-COMMAND?=npm run start
-run:
-	$(DC) $(DC_ALL) run --rm app $(COMMAND)
+start:
+	$(D) start $(CONTAINER_NAME)
 
-exec:
-	$(DC) $(DC_ALL) exec app $(COMMAND)
+# Can't rely on docker-compose to run shell or any one-off commands, as docker compose run --rm and exec
+# are both shit and do not clean up after themselves, nor do they allow you to re-use containers.
+# Fucking toddlers.
+sh: start
+	$(D) exec -it $(CONTAINER_NAME) sh
+
+COMMAND?=npm start
+run: start
+	$(D) exec $(CONTAINER_NAME) $(COMMAND)
 
 cert:
 	mkcert -install
