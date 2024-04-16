@@ -88,7 +88,7 @@
   },
   "devDependencies": {
     "@casl/react": "^2.1.1",
-    "@janejeon/eslint-config": "3.0.0-6",
+    "@janejeon/eslint-config": "3.0.0-7",
     "@janejeon/prettier-config": "^2.0.0",
     "@testing-library/jest-dom": "^5.11.2",
     "@testing-library/react": "^12.1.2",
