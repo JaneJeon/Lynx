@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 #----------------------------------------#
 # dev/test
-FROM node:18-alpine AS deps
+FROM node:18.17-alpine AS deps
 RUN apk add --no-cache --virtual .gyp python3 make g++ libc6-compat && \
     npm i -g npm
 ENV NPM_CONFIG_PREFER_OFFLINE=true
@@ -19,7 +19,7 @@ COPY --chown=node:node . .
 
 #----------------------------------------#
 # We have a separate build container to persist build artifacts & production npm deps
-FROM node:18-alpine AS build
+FROM node:18.17-alpine AS build
 RUN apk add --no-cache --virtual .gyp python3 make g++ libc6-compat && \
     npm i -g npm
 ENV NPM_CONFIG_PREFER_OFFLINE=true
@@ -37,7 +37,7 @@ RUN npm run build && \
 
 
 #----------------------------------------#
-FROM node:18-alpine AS runner
+FROM node:18.17-alpine AS runner
 RUN apk add --no-cache tini
 
 USER node
