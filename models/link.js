@@ -9,7 +9,13 @@ const { URL } = require('url')
 const normalizeUrl = require('normalize-url')
 const domain = new URL(process.env.BASE_URL).host
 
+
 class Link extends hashId(BaseModel) {
+
+  static get hashIdAlphabet() {
+    return 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_';
+  }
+  
   static get relationMappings() {
     return {
       creator: {
